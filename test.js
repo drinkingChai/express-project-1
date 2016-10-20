@@ -12,13 +12,13 @@ describe('Request to root path', function() {
       });
   });
 
-  it('Returns HTML format', function() {
+  it('Returns HTML format', function(done) {
     request(app)
       .get('/')
       .expect('Content-type', /html/, done);
   });
 
-  it('Returns an index file with Cities', function() {
+  it('Returns an index file with Cities', function(done) {
     request(app)
       .get('/')
       .expect(/cities/i, done);
