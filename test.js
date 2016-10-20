@@ -11,8 +11,20 @@ describe('Request to root path', function() {
         done();
       });
   });
-});
 
+  it('Returns HTML format', function() {
+    request(app)
+      .get('/')
+      .expect('Content-type', /html/, done);
+  });
+
+  it('Returns an index file with Cities', function() {
+    request(app)
+      .get('/')
+      .expect(/cities/i, done);
+  });
+
+});
 
 describe('Liisting cities on /cities', function() {
   it('Returns 200 status code', function(done) {
@@ -25,6 +37,12 @@ describe('Liisting cities on /cities', function() {
     request(app)
       .get('/cities')
       .expect('Content-type', /json/, done)
+  });
+
+  it('Returns initial cities', function(done) {
+    request(app)
+      .get('/cities')
+      .expect(JSON.stringify(['Lotopia', 'Caspiana', 'Indigo']), done);
   });
 
 });
