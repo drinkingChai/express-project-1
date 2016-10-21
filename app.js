@@ -1,62 +1,9 @@
 var express = require('express');
 var app = express();
 
-var bodyParser = require('body-parser');
-var urlencode = bodyParser.urlencoded({ extended: false });
-
 app.use(express.static('public'));
 
 var cities = require('./routes/cities');
 app.use('/cities', cities);
-
-// Redis connection
-var redis = require('redis');
-if (process.env.REDISTOGO_URL) {
-  var rtg = require("url").parse(process.env.REDISTOGO_URL);
-  var client = redis.createClient(rtg.port, rtg.hostname);
-  client.auth(rtg.auth.split(":")[1]);
-} else {
-  var client = redis.createClient();
-  client.select(('test' || 'development').length);
-}
-
-// End Redis connection
-
-// client.hset('cities', 'Lotopia', 'description');
-// client.hset('cities', 'Caspiana', 'description');
-// client.hset('cities', 'Indigo', 'description');
-
-app.get('/cities', function(request, response) {
-  client.hkeys('cities', function(error, names) {
-    response.json(names);
-  });
-});
-
-app.post('/cities', urlencode, function(request, response) {
-  var newCity = request.body;
-  if (!newCity.name || !newCity.description) {
-    response.sendStatus(400);
-    return false;
-  }
-  client.hset('cities', newCity.name, newCity.description, function(error) {
-    if (error) throw error;
-
-    response.status(201).json(newCity.name);
-  });
-});
-
-app.delete('/cities/:name', function(request, response) {
-  client.hdel('cities', request.params.name, function(error) {
-    if (error) throw error;
-    response.sendStatus(204);
-  });
-});
-
-app.get('/cities/:name', function(request, response) {
-  client.hget('cities', request.params.name, function(error, description) {
-    response.render('show.ejs',
-    { city: { name: request.params.name, description: description } });
-  });
-});
 
 module.exports = app;
