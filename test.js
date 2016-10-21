@@ -71,7 +71,7 @@ describe('Creating new cities', function() {
       request(app)
         .post('/cities')
         .send('name=&description=')
-        .expect(404, done);
+        .expect(400, done);
   });
 
 });
