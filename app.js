@@ -9,11 +9,11 @@ app.use(express.static('public'));
 var redis = require('redis');
 var client = redis.createClient();
 
-client.select(process.env.NODE_ENV || 'development'.length);
+client.select(('test' || 'development').length);
 
-client.hset('cities', 'Lotopia', 'description');
-client.hset('cities', 'Caspiana', 'description');
-client.hset('cities', 'Indigo', 'description');
+// client.hset('cities', 'Lotopia', 'description');
+// client.hset('cities', 'Caspiana', 'description');
+// client.hset('cities', 'Indigo', 'description');
 
 app.get('/cities', function(request, response) {
   client.hkeys('cities', function(error, names) {

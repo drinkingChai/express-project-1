@@ -1,6 +1,11 @@
 var request = require('supertest');
 var app = require('./app');
 
+var redis = require('redis');
+var client = redis.createClient();
+client.select('test'.length);
+client.flushdb();
+
 describe('Request to root path', function() {
   it('Returns a status code of 200', function(done) {
     request(app)
@@ -42,7 +47,7 @@ describe('Listing cities on /cities', function() {
   it('Returns initial cities', function(done) {
     request(app)
       .get('/cities')
-      .expect(JSON.stringify(['Lotopia', 'Caspiana', 'Indigo']), done);
+      .expect(JSON.stringify([]), done);
   });
 
 });
